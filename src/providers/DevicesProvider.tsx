@@ -9,28 +9,28 @@ import {
   useState,
 } from "react";
 
-type DeviceProviderContextType = {
-  devs: MediaDeviceInfo[];
+type DevicesProviderContextType = {
+  devices: MediaDeviceInfo[];
   error: unknown;
   toggleDevice: () => void;
   device: MediaDeviceInfo | undefined;
 };
 
-const DeviceProviderContext = createContext<DeviceProviderContextType | null>(
+const DevicesProviderContext = createContext<DevicesProviderContextType | null>(
   null
 );
 
 export const useDevices = () => {
-  const context = useContext(DeviceProviderContext);
+  const context = useContext(DevicesProviderContext);
   if (!context) {
     throw new Error(
-      `${useDevices.name}() should be used inside a <${DeviceProvider.name} />`
+      `${useDevices.name}() should be used inside a <${DevicesProvider.name} />`
     );
   }
   return context;
 };
 
-export const DeviceProvider: FC<PropsWithChildren> = ({ children }) => {
+export const DevicesProvider: FC<PropsWithChildren> = ({ children }) => {
   const [error, setError] = useState<unknown>();
   const [devs, setDevs] = useState<MediaDeviceInfo[]>([]);
   useEffect(() => {
@@ -63,15 +63,15 @@ export const DeviceProvider: FC<PropsWithChildren> = ({ children }) => {
   const device = useMemo(() => videoDevs[selected], [videoDevs, selected]);
 
   return (
-    <DeviceProviderContext.Provider
+    <DevicesProviderContext.Provider
       value={{
-        devs: videoDevs,
+        devices: videoDevs,
         error,
         toggleDevice,
         device,
       }}
     >
       {children}
-    </DeviceProviderContext.Provider>
+    </DevicesProviderContext.Provider>
   );
 };

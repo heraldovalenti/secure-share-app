@@ -1,20 +1,20 @@
 import { useRequestPermission } from "./hooks/useRequestPermission";
 import { VideoCam } from "./components/VideoCam";
-import { DeviceProvider } from "./providers/DeviceProvider";
+import { DevicesProvider } from "./providers/DevicesProvider";
 import { ActiveDevice } from "./components/ActiveDevice";
 
 function App() {
   const { isAllowed } = useRequestPermission();
   return (
     <div>
-      <DeviceProvider>
+      <DevicesProvider>
         {isAllowed ? (
           <>
             <VideoCam />
             <ActiveDevice />
           </>
         ) : null}
-      </DeviceProvider>
+      </DevicesProvider>
     </div>
   );
 }

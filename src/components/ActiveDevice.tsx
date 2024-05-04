@@ -1,7 +1,7 @@
-import { useDevices } from "../providers/DeviceProvider";
+import { useDevices } from "../providers/DevicesProvider";
 
 export const ActiveDevice = () => {
-  const { device, devs } = useDevices();
+  const { device, devices: devs } = useDevices();
 
   return (
     <>
