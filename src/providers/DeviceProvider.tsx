@@ -1,10 +1,36 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  FC,
+  PropsWithChildren,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
-const videoConstraints = {
-  width: 200,
-  height: 200,
+type DeviceProviderContextType = {
+  devs: MediaDeviceInfo[];
+  error: unknown;
+  toggleDevice: () => void;
+  device: MediaDeviceInfo | undefined;
 };
+
+const DeviceProviderContext = createContext<DeviceProviderContextType | null>(
+  null
+);
+
 export const useDevices = () => {
+  const context = useContext(DeviceProviderContext);
+  if (!context) {
+    throw new Error(
+      `${useDevices.name}() should be used inside a <${DeviceProvider.name} />`
+    );
+  }
+  return context;
+};
+
+export const DeviceProvider: FC<PropsWithChildren> = ({ children }) => {
   const [error, setError] = useState<unknown>();
   const [devs, setDevs] = useState<MediaDeviceInfo[]>([]);
   useEffect(() => {
@@ -34,17 +60,18 @@ export const useDevices = () => {
       setSelected(0);
     }
   }, [selected, videoDevs.length]);
-  const constraints = useMemo(
-    () => ({ ...videoConstraints, deviceId: videoDevs[selected]?.deviceId }),
-    [selected, videoDevs]
-  );
   const device = useMemo(() => videoDevs[selected], [videoDevs, selected]);
 
-  return {
-    error,
-    constraints,
-    device,
-    videoDevs,
-    toggleDevice,
-  };
+  return (
+    <DeviceProviderContext.Provider
+      value={{
+        devs: videoDevs,
+        error,
+        toggleDevice,
+        device,
+      }}
+    >
+      {children}
+    </DeviceProviderContext.Provider>
+  );
 };

@@ -1,19 +1,23 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import Webcam from "react-webcam";
-import { useDevices } from "../hooks/useDevices";
+import { useDevices } from "../providers/DeviceProvider";
 
 export const VideoCam = () => {
   const webcamRef = useRef<Webcam>(null);
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current?.getScreenshot();
     console.log(imageSrc);
+    if (typeof imageSrc === "string") window.open(imageSrc);
   }, [webcamRef]);
 
-  const { error, constraints, device, videoDevs, toggleDevice } = useDevices();
+  const { toggleDevice, device } = useDevices();
+  const constraints = useMemo(
+    () => ({ width: 200, height: 200, deviceId: device?.deviceId }),
+    [device?.deviceId]
+  );
+
   return (
     <div>
-      {!!error && <p>error: {JSON.stringify(error)}</p>}
-      {!!error && <p>error: {error.toString()}</p>}
       <Webcam
         audio={false}
         height={200}
@@ -21,25 +25,14 @@ export const VideoCam = () => {
         screenshotFormat="image/jpeg"
         width={200}
         videoConstraints={constraints}
+        mirrored={true}
       />
-      <button onClick={capture}>Capture photo</button>
-      <button onClick={toggleDevice}>Toggle</button>
-      <label>Active: {device?.deviceId}</label>
-      {videoDevs.map((d) => {
-        return (
-          <div
-            key={d.deviceId}
-            style={{ backgroundColor: "#aaa", margin: "10px" }}
-          >
-            <ul>
-              <li>{d.deviceId} </li>
-              <li>{d.label} </li>
-              <li>{d.kind} </li>
-              <li>{d.groupId} </li>
-            </ul>
-          </div>
-        );
-      })}
+      <button style={{ height: 50 }} onClick={capture}>
+        Capture photo
+      </button>
+      <button style={{ height: 50 }} onClick={toggleDevice}>
+        Toggle
+      </button>
     </div>
   );
 };
