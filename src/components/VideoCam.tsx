@@ -1,17 +1,20 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { FC, useCallback, useMemo, useRef } from "react";
 import Webcam from "react-webcam";
 import { useDevices } from "../providers/DevicesProvider";
+import { Button } from "./Button";
 
-export const VideoCam = () => {
+export const VideoCam: FC<{
+  goPreview: (photo: string) => void;
+  goInit: () => void;
+}> = ({ goPreview, goInit }) => {
   const webcamRef = useRef<Webcam>(null);
-  const [snapshot, setSnapshot] = useState("");
 
   const capture = useCallback(() => {
-    const imageSrc = webcamRef.current?.getScreenshot();
-    if (typeof imageSrc === "string") {
-      setSnapshot(imageSrc);
+    const photo = webcamRef.current?.getScreenshot();
+    if (typeof photo === "string") {
+      goPreview(photo);
     }
-  }, []);
+  }, [goPreview]);
 
   const { toggleDevice, device, devices } = useDevices();
   const constraints = useMemo(
@@ -21,10 +24,16 @@ export const VideoCam = () => {
     }),
     [device?.deviceId]
   );
-  const singleDevice = useMemo(() => devices.length > 1, [devices.length]);
+  const singleDevice = useMemo(() => devices.length === 1, [devices.length]);
 
   return (
     <div>
+      <Button onClick={goInit} label="Volver" />
+      <Button onClick={capture} label="Tomar foto" />
+
+      {!singleDevice && (
+        <Button onClick={toggleDevice} label="Cambiar camara" />
+      )}
       <Webcam
         audio={false}
         // height={200}
@@ -34,20 +43,6 @@ export const VideoCam = () => {
         videoConstraints={constraints}
         mirrored={true}
       />
-      <button style={{ height: 50 }} onClick={capture}>
-        Capture photo
-      </button>
-      {singleDevice && (
-        <button style={{ height: 50 }} onClick={toggleDevice}>
-          Toggle
-        </button>
-      )}
-      {!!snapshot && (
-        <img
-          src={snapshot}
-          // height={200} width={200}
-        />
-      )}
     </div>
   );
 };

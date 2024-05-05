@@ -1,19 +1,21 @@
 import { useRequestPermission } from "./hooks/useRequestPermission";
-import { VideoCam } from "./components/VideoCam";
 import { DevicesProvider } from "./providers/DevicesProvider";
-import { ActiveDevice } from "./components/ActiveDevice";
+import { Loading } from "./components/Loading";
+import { Warning } from "./components/Warning";
+import { ScreenHandler } from "./components/ScreenHandler";
 
 function App() {
-  const { isAllowed } = useRequestPermission();
+  const { isAllowed, isRequested } = useRequestPermission();
+  if (!isRequested) {
+    return <Loading />;
+  }
+  if (!isAllowed) {
+    return <Warning />;
+  }
   return (
     <div>
       <DevicesProvider>
-        {isAllowed ? (
-          <>
-            <VideoCam />
-            <ActiveDevice />
-          </>
-        ) : null}
+        <ScreenHandler />
       </DevicesProvider>
     </div>
   );
