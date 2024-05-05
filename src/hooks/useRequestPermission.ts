@@ -33,5 +33,9 @@ export const useRequestPermission = () => {
     }
   }, [allowed]);
 
-  return { status: result, isAllowed: result === "ALLOWED" };
+  return {
+    status: result,
+    isAllowed: result === "ALLOWED",
+    isRequested: result !== "NOT_REQUESTED",
+  };
 };
