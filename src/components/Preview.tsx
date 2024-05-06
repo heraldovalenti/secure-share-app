@@ -1,7 +1,7 @@
 import { FC, useMemo } from "react";
 import { useSendFile } from "../hooks/useSendFile";
 import { useEncryptFile } from "../hooks/useEncryptFile";
-import { Button } from "./Button";
+import { Grid, Button, CircularProgress } from "@mui/material";
 
 type PreviewProps = {
   photo: string;
@@ -15,28 +15,43 @@ export const Preview: FC<PreviewProps> = ({ photo, goCamera }) => {
     [encryptLoading, sendLoading]
   );
   return (
-    <div>
-      <Button onClick={goCamera} label="Tomar otra foto" />
-      {!sent && (
-        <Button
-          label="Enviar foto"
-          disabled={sent || !!error || loading}
-          onClick={async () => {
-            const result = await encryptFile(photo);
-            if (result) {
-              await sendFile(result);
-            }
-          }}
-        />
-      )}
-      {sent && <label>Foto subida con exito</label>}
-      {!!photo && (
-        <img
-          alt="Preview"
-          src={photo}
-          // height={200} width={200}
-        />
-      )}
-    </div>
+    <Grid>
+      <Grid>
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <>
+            <Button onClick={goCamera} variant="contained">
+              Tomar otra foto
+            </Button>
+            {!sent ? (
+              <Button
+                variant="contained"
+                disabled={sent || !!error || loading}
+                onClick={async () => {
+                  const result = await encryptFile(photo);
+                  if (result) {
+                    await sendFile(result);
+                  }
+                }}
+              >
+                Enviar foto
+              </Button>
+            ) : (
+              <Button variant="outlined">Foto subida con exito</Button>
+            )}
+          </>
+        )}
+      </Grid>
+      <Grid>
+        {!!photo && (
+          <img
+            alt="Preview"
+            src={photo}
+            // height={200} width={200}
+          />
+        )}
+      </Grid>
+    </Grid>
   );
 };

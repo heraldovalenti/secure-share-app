@@ -1,7 +1,7 @@
 import { FC, useCallback, useMemo, useRef } from "react";
 import Webcam from "react-webcam";
 import { useDevices } from "../providers/DevicesProvider";
-import { Button } from "./Button";
+import { Container, Button, Grid } from "@mui/material";
 
 export const VideoCam: FC<{
   goPreview: (photo: string) => void;
@@ -27,22 +27,32 @@ export const VideoCam: FC<{
   const singleDevice = useMemo(() => devices.length === 1, [devices.length]);
 
   return (
-    <div>
-      <Button onClick={goInit} label="Volver" />
-      <Button onClick={capture} label="Tomar foto" />
+    <Grid>
+      <Grid>
+        <Button onClick={goInit} variant="contained">
+          Volver
+        </Button>
+        <Button onClick={capture} variant="contained">
+          Tomar foto
+        </Button>
 
-      {!singleDevice && (
-        <Button onClick={toggleDevice} label="Cambiar camara" />
-      )}
-      <Webcam
-        audio={false}
-        // height={200}
-        ref={webcamRef}
-        screenshotFormat="image/jpeg"
-        // width={200}
-        videoConstraints={constraints}
-        mirrored={true}
-      />
-    </div>
+        {!singleDevice && (
+          <Button onClick={toggleDevice} variant="outlined">
+            Cambiar camara
+          </Button>
+        )}
+      </Grid>
+      <Grid>
+        <Webcam
+          audio={false}
+          // height={200}
+          ref={webcamRef}
+          screenshotFormat="image/jpeg"
+          // width={200}
+          videoConstraints={constraints}
+          mirrored={true}
+        />
+      </Grid>
+    </Grid>
   );
 };

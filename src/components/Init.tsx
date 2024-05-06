@@ -1,13 +1,18 @@
+import { Grid } from "@mui/material";
+import Button from "@mui/material/Button";
 import { FC } from "react";
-import { Button } from "./Button";
 
 type InitProps = {
   goCamera: () => void;
 };
 export const Init: FC<InitProps> = ({ goCamera }) => {
   return (
-    <div>
-      <Button onClick={goCamera} label="Abrir camara" />
-    </div>
+    <Grid>
+      <Grid>
+        <Button onClick={goCamera} variant="contained">
+          Abrir camara
+        </Button>
+      </Grid>
+    </Grid>
   );
 };
