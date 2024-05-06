@@ -50,7 +50,7 @@ export const VideoCam: FC<{
           screenshotFormat="image/jpeg"
           // width={200}
           videoConstraints={constraints}
-          mirrored={true}
+          // mirrored={true}
         />
       </Grid>
     </Grid>
